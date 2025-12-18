@@ -2,6 +2,7 @@ package com.marketplace.marketplaceproductservice.service;
 
 import com.marketplace.marketplaceproductservice.dto.ProductCreateRequest;
 import com.marketplace.marketplaceproductservice.dto.ProductUpdateRequest;
+import com.marketplace.marketplaceproductservice.enums.Category;
 import com.marketplace.marketplaceproductservice.exception.ProductNotFoundException;
 import com.marketplace.marketplaceproductservice.mapper.ProductMapper;
 import com.marketplace.marketplaceproductservice.model.Product;
@@ -20,6 +21,9 @@ public class ProductService {
 
     public List<Product> findAllProducts() {
         return productRepository.findAll();
+    }
+    public List<Product> getProductsByCategory(Category category) {
+        return productRepository.findByCategory(category);
     }
     public Product findProductById(Long id) {
         return productRepository.findById(id)

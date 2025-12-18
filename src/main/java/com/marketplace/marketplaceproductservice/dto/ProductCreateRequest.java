@@ -1,5 +1,6 @@
 package com.marketplace.marketplaceproductservice.dto;
 
+import com.marketplace.marketplaceproductservice.enums.Category;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,5 +25,7 @@ public class ProductCreateRequest {
 
     @Size(max = 1000, message = "Description is too long.")
     private String description;
+
+    private Category category;
 
 }

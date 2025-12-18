@@ -1,4 +1,5 @@
 package com.marketplace.marketplaceproductservice.model;
+import com.marketplace.marketplaceproductservice.enums.Category;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,8 +19,13 @@ public class Product {
     private Long id;
     private String name;
     private BigDecimal price;
+
+    @Enumerated(EnumType.STRING)
+    private Category category;
+
     private Integer quantity;
     private String description;
+    private Double rating = 4.5;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

@@ -3,6 +3,7 @@ package com.marketplace.marketplaceproductservice.controller;
 import com.marketplace.marketplaceproductservice.dto.ProductCreateRequest;
 import com.marketplace.marketplaceproductservice.dto.ProductResponse;
 import com.marketplace.marketplaceproductservice.dto.ProductUpdateRequest;
+import com.marketplace.marketplaceproductservice.enums.Category;
 import com.marketplace.marketplaceproductservice.mapper.ProductMapper;
 import com.marketplace.marketplaceproductservice.model.Product;
 import com.marketplace.marketplaceproductservice.repository.ProductRepository;
@@ -19,8 +20,6 @@ import java.util.List;
 @RequestMapping("/api/products")
 public class ProductController {
     @Autowired
-    private ProductRepository productRepository;
-    @Autowired
     private ProductService productService;
     @Autowired
     private ProductMapper productMapper;
@@ -34,6 +33,12 @@ public class ProductController {
     public ResponseEntity<Product> findProductById(@PathVariable Long id){
         return ResponseEntity.ok(productService.findProductById(id));
     }
+    @GetMapping("/category/{category}")
+    public ResponseEntity<List<Product>> getByCategory(@PathVariable Category category) {
+
+        return ResponseEntity.ok(productService.getProductsByCategory(category));
+    }
+
 
     @PostMapping
     public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductCreateRequest productRequest){

@@ -1,5 +1,6 @@
 package com.marketplace.marketplaceproductservice.dto;
 
+import com.marketplace.marketplaceproductservice.enums.Category;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +16,9 @@ public class ProductResponse {
     private Long id;
     private String name;
     private BigDecimal price;
+    private Category category;
     private Integer quantity;
     private String description;
+    private Double rating;
     private LocalDateTime createdAt;
 }

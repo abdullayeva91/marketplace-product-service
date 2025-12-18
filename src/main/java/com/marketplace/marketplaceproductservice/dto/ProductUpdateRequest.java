@@ -1,5 +1,6 @@
 package com.marketplace.marketplaceproductservice.dto;
 
+import com.marketplace.marketplaceproductservice.enums.Category;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -14,7 +15,6 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductUpdateRequest {
-    private Long id;
     @NotBlank
     @Size(max = 255, message = "Name cannot exceed 255 characters.")
     private String name;
@@ -27,4 +27,6 @@ public class ProductUpdateRequest {
 
     @Size(max = 1000, message = "Description is too long.")
     private String description;
+
+    private Category category;
 }
