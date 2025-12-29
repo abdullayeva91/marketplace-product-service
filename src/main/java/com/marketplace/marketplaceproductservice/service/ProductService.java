@@ -34,11 +34,10 @@ public class ProductService {
         return productRepository.save(product);
     }
     public Product updateProduct(Long id, ProductUpdateRequest updateRequest) {
-        Product existingProduct= productRepository.findById(id)
-                .orElseThrow(()->new ProductNotFoundException("Product not found"));
-        existingProduct.setName(updateRequest.getName());
-        existingProduct.setDescription(updateRequest.getDescription());
-        existingProduct.setPrice(updateRequest.getPrice());
+        Product existingProduct = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
+
+        productMapper.updateEntityFromDto(updateRequest, existingProduct);
         return productRepository.save(existingProduct);
     }
     public void deleteProduct(Long id) {

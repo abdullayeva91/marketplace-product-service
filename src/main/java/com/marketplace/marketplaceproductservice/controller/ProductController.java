@@ -25,19 +25,28 @@ public class ProductController {
     private ProductMapper productMapper;
 
     @GetMapping
-    public ResponseEntity<List<Product>>findAllProducts(){
-        return ResponseEntity.ok(productService.findAllProducts());
+    public ResponseEntity<List<ProductResponse>> findAllProducts() {
+        List<Product> products = productService.findAllProducts();
+        List<ProductResponse> responses = products.stream()
+                .map(productMapper::toResponse)
+                .toList();
+        return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> findProductById(@PathVariable Long id){
-        return ResponseEntity.ok(productService.findProductById(id));
+    public ResponseEntity<ProductResponse> findProductById(@PathVariable Long id) {
+        Product product = productService.findProductById(id);
+        return ResponseEntity.ok(productMapper.toResponse(product));
     }
-    @GetMapping("/category/{category}")
-    public ResponseEntity<List<Product>> getByCategory(@PathVariable Category category) {
 
-        return ResponseEntity.ok(productService.getProductsByCategory(category));
-    }
+        @GetMapping("/category/{category}")
+        public ResponseEntity<List<ProductResponse>> getByCategory(@PathVariable Category category){
+            List<Product> products = productService.getProductsByCategory(category);
+            List<ProductResponse> responses = products.stream()
+                    .map(productMapper::toResponse)
+                    .toList();
+            return ResponseEntity.ok(responses);
+        }
 
 
     @PostMapping
@@ -50,8 +59,11 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductUpdateRequest product){
-        return ResponseEntity.ok(productService.updateProduct(id, product));
+    public ResponseEntity<ProductResponse> updateProduct(
+            @PathVariable Long id,
+            @Valid @RequestBody ProductUpdateRequest product) {
+        Product updated = productService.updateProduct(id, product);
+        return ResponseEntity.ok(productMapper.toResponse(updated));
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id){
