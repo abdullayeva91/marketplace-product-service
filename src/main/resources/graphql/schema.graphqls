@@ -1,0 +1,17 @@
+
+type Product {
+    id: ID!
+    name: String!
+    price: Float!
+    category: String
+    quantity: Int!
+    description: String
+    rating: Float
+    createdAt: String
+    updatedAt: String
+}
+
+type Query {
+    getAllProducts: [Product!]!
+    getProductById(id: ID!): Product
+}

@@ -6,7 +6,6 @@ import com.marketplace.marketplaceproductservice.dto.ProductUpdateRequest;
 import com.marketplace.marketplaceproductservice.enums.Category;
 import com.marketplace.marketplaceproductservice.mapper.ProductMapper;
 import com.marketplace.marketplaceproductservice.model.Product;
-import com.marketplace.marketplaceproductservice.repository.ProductRepository;
 import com.marketplace.marketplaceproductservice.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,28 +49,45 @@ public class ProductController {
 
 
     @PostMapping
-    public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductCreateRequest productRequest){
+    public ResponseEntity<ProductResponse> createProduct(
+            @Valid @RequestBody ProductCreateRequest productRequest,
+            @RequestHeader(value = "X-User-Role", required = false) String role) {
+
+        if (!"ADMIN".equals(role)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         Product product = productService.createProduct(productRequest);
-
         ProductResponse response = productMapper.toResponse(product);
-
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponse> updateProduct(
             @PathVariable Long id,
-            @Valid @RequestBody ProductUpdateRequest product) {
+            @Valid @RequestBody ProductUpdateRequest product,
+            @RequestHeader(value = "X-User-Role", required = false) String role) {
+
+        if (!"ADMIN".equals(role)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         Product updated = productService.updateProduct(id, product);
         return ResponseEntity.ok(productMapper.toResponse(updated));
     }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id){
+    public ResponseEntity<Void> deleteProduct(
+            @PathVariable Long id,
+            @RequestHeader(value = "X-User-Role", required = false) String role) {
+
+        if (!"ADMIN".equals(role)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         productService.deleteProduct(id);
         return ResponseEntity.ok().build();
     }
-
-
 }
 
 

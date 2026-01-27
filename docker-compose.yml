@@ -1,0 +1,67 @@
+services:
+  product-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    container_name: product-service
+    ports:
+      - "8082:8082"
+    expose:
+      - "8082"
+      - "9091"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-product:5432/marketplace
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=20
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_SHOW_SQL=true
+      - SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL=true
+      - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.PostgreSQLDialect
+      - SPRING_GRAPHQL_PATH=/graphql
+      - SPRING_GRAPHQL_GRAPHIQL_ENABLED=true
+      - SPRING_GRAPHQL_SCHEMA_INSPECTION_ENABLED=true
+      - SPRING_DATA_REDIS_HOST=redis-product
+      - SPRING_DATA_REDIS_PORT=6379
+      - SPRING_CACHE_TYPE=redis
+      - LOGGING_LEVEL_ORG_HIBERNATE_SQL=DEBUG
+      - LOGGING_LEVEL_ORG_HIBERNATE_TYPE_DESCRIPTOR_SQL_BASICBINDER=TRACE
+      - GRPC_SERVER_PORT=9091
+    depends_on:
+      - postgres-product
+      - redis-product
+    networks:
+      - backend
+
+  postgres-product:
+    image: postgres:16-alpine
+    container_name: postgres-product
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 2016
+      POSTGRES_DB: marketplace
+    volumes:
+      - product-pgdata:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  redis-product:
+    image: redis:7-alpine
+    container_name: redis-product
+    ports:
+      - "6379:6379"
+    volumes:
+      - product-redisdata:/data
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+    name: marketplace-backend
+
+volumes:
+  product-pgdata:
+  product-redisdata:

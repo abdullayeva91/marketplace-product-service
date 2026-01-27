@@ -8,6 +8,9 @@ import com.marketplace.marketplaceproductservice.mapper.ProductMapper;
 import com.marketplace.marketplaceproductservice.model.Product;
 import com.marketplace.marketplaceproductservice.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,16 +22,22 @@ public class ProductService {
     @Autowired
     private ProductMapper productMapper;
 
+    @Cacheable(value = "products", key = "'all'")
     public List<Product> findAllProducts() {
         return productRepository.findAll();
     }
     public List<Product> getProductsByCategory(Category category) {
         return productRepository.findByCategory(category);
     }
+
+    @Cacheable(value = "products", key = "#id")
     public Product findProductById(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(()->new ProductNotFoundException("Product not found"));
     }
+
+    @CachePut(value = "products", key = "#result.id")
+    @CacheEvict(value = "products", key = "'all'")
     public Product createProduct(ProductCreateRequest createRequest) {
         Product product = productMapper.toEntity(createRequest);
         return productRepository.save(product);
@@ -40,6 +49,8 @@ public class ProductService {
         productMapper.updateEntityFromDto(updateRequest, existingProduct);
         return productRepository.save(existingProduct);
     }
+
+    @CacheEvict(value = "products", allEntries = true)
     public void deleteProduct(Long id) {
         if (!productRepository.existsById(id)) {
             throw new ProductNotFoundException("Product not found");
